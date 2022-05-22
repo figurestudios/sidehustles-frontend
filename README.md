@@ -11,4 +11,4 @@ In the root directory of the repository, you can run:
 
 ## Homescreen
 
-[![Add to Homescreen](https://img.shields.io/badge/Skynet-Add%20To%20Homescreen-00c65e?logo=skynet&labelColor=0d0d0d)](https://homescreen.hns.siasky.net/#/skylink/sia://AAAzbCBxxV5vCRMZEDMpXA1tQHzZaWzM-IzkWTQbfq4DBQ)
+[![Add to Homescreen](https://img.shields.io/badge/Skynet-Add%20To%20Homescreen-00c65e?logo=skynet&labelColor=0d0d0d)](https://homescreen.hns.siasky.net/#/skylink/AAAzbCBxxV5vCRMZEDMpXA1tQHzZaWzM-IzkWTQbfq4DBQ)
