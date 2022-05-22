@@ -34,8 +34,8 @@ function App(){
 
   const client = new SkynetClient(portal);
 
-  const { publicKey } = genKeyPairFromSeed("this seed should be fairly long for security");
-  const { privateKey } = genKeyPairFromSeed("this seed should be fairly long for security");
+  const { publicKey } = genKeyPairFromSeed("you should not be reading this super private secure seed phrase");
+  const { privateKey } = genKeyPairFromSeed("you should not be reading this super private secure seed phrase");
 
   const dataKey = "myApp";
   const json = { example: "Hello." };
@@ -43,9 +43,10 @@ function App(){
   console.log("publicKey", publicKey);
 
   async function getJSONExample() {
+    let _publicKey = document.getElementById("workerPublicKey").value;
     try {
-      const { data, dataLink } = await client.db.getJSON(publicKey, dataKey);
-      console.log(data);
+      const { data, dataLink } = await client.db.getJSON(_publicKey, dataKey);
+      document.getElementById("ret-skylink").value = dataLink.toString().substring(6);
     } catch (error) {
       console.log(error);
     }
@@ -53,16 +54,7 @@ function App(){
 
   async function setJSONExample() {
     try {
-      await client.db.setJSON(privateKey, dataKey, { example: getText() });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function getEntryExample() {
-    try {
-      const url = client.registry.getEntryUrl(publicKey, dataKey);
-      console.log(url);
+      await client.db.setJSON(privateKey, dataKey, { example: document.getElementById("workerFileKey").value });
     } catch (error) {
       console.log(error);
     }
@@ -73,34 +65,62 @@ function App(){
   }
 
   return (
-    <div className='grid place-items-center h-screen'>
-      <input id="file-field" placeholder="Your content ..." className="bg-slate-600 w-1/3 px-4 py-4"></input>
-      <input id="desc-field" placeholder="Your description ..." className="bg-slate-600 w-1/3 px-4 py-4"></input>
-      <input id="file-link" disabled="true" placeholder="Your skylink ... (content)" className="bg-slate-600 w-1/3 px-4 py-4"></input>
-      <input id="desc-link" disabled="true" placeholder="Your skylink ... (description)" className="bg-slate-600 w-1/3 px-4 py-4"></input>
-      <button onClick={getJSONExample}>Get JSON</button>
-      <button onClick={setJSONExample}>Set JSON</button>
-      <button onClick={getEntryExample}>Get URL</button>
-      <button onClick={() => { activate(CoinbaseWallet) }}>Coinbase Wallet</button>
-      <button onClick={() => { activate(WalletConnect) }}>Wallet Connect</button>
-      <button onClick={() => { activate(Injected) }}>Metamask</button>
-
-      <button onClick={deactivate}>Disconnect</button>
-
-      <div>{"Connection Status: "+active}</div>
-      <div>{"Account: "+account}</div>
-      <div>{"Network ID: "+chainId}</div>
+    <div>
+      <div id="warning" className="bg-orange-300 text-black text-5xl text-center py-10">(This application is being developed, but feel free to use these demo features)</div>
+      <div id="header" className="bg-neutral-100 relative top-0 w-full text-5xl h-16">
+        <p className="inline-block align-middle text-center w-full">SIDEHUSTLES</p>
+      </div>
+      <div id="body">
+        <div id="row-boxes" className="bg-white flex flex-row items-center space-x-16 place-content-center py-8 w-full h-3/5">
+        <div id="box-0" className="bg-neutral-100 h-3/5 w-1/4">
+          <button className="w-full text-left" onClick={() => { activate(CoinbaseWallet) }}>[ Coinbase Wallet ]</button>
+          <button className="w-full text-left" onClick={() => { activate(WalletConnect) }}>[ Wallet Connect ]</button>
+          <button className="w-full text-left" onClick={() => { activate(Injected) }}>[ Metamask ]</button>
+          <button className="w-full text-left" onClick={deactivate}>[ Disconnect] </button>
+          <div>{"Connection Status: "+active}</div>
+          <div>{account}</div>
+        </div>
+        <div id="box-1" className="bg-neutral-100 h-3/5 w-1/4">
+            <div className="flex flex-row">
+              <p className="w-1/4">Public Key:</p>
+              <input value={publicKey} disabled={true} placeholder="[ ... ]" className="bg-neutral-200 w-3/4"></input>
+            </div>
+            <div className="flex flex-row">
+              <p className="w-1/4">Private Key:</p>
+              <input value={privateKey} disabled={true} placeholder="[ ... ]" className="bg-neutral-200 w-3/4"></input>
+            </div>
+            <button className="w-full text-left" onClick={() => { setJSONExample();}}>[ Read public key from contract (WORKERS') ]</button>
+            <input id="ret-pubKey" disabled={true} placeholder="[ ... ]" className="bg-neutral-200 w-full"></input>
+            <button className="w-full text-left" onClick={() => { setJSONExample();}}>[ Read public key from contract (REQUESTORS') ]</button>
+            <input id="ret-pubKey" disabled={true} placeholder="[ ... ]" className="bg-neutral-200 w-full"></input>
+        </div>
+        <div id="box-2" className="bg-neutral-100 h-3/5 w-1/4">
+            <div>Set data:</div>
+            <input id="workerPrivateKey" placeholder="Enter your private key ... " className="bg-neutral-200 w-full"></input>
+            <input id="workerFileKey" placeholder="Enter your skyfile hash ... " className="bg-neutral-200 w-full"></input>
+            <button className="w-full text-left" onClick={() => { setJSONExample();}}>[ Publish skylink to registry ]</button>
+            <input id="workerPublicKey" className="w-full bg-neutral-200" placeholder="Enter your public key ... "></input>
+            <button className="w-full text-left" onClick={() => { setJSONExample();}}>[ Publish public key to contract ]</button>
+        </div>
+        <div id="box-3" className="bg-neutral-100 h-3/5 w-1/4">
+            <div>Get data:</div>
+            <input id="workerPublicKey" className="w-full bg-neutral-200" placeholder="Enter their public key ... "></input>
+            <button className="w-full text-left" onClick={() => { getJSONExample();}}>[ Get skylink from registry ]</button>
+            <input id="ret-skylink" disabled={true} placeholder="[ ... ]" className="bg-neutral-200 w-full"></input>
+            <input id="workerPublicKey" className="w-full bg-neutral-200" placeholder="Enter your public key ... "></input>
+            <button className="w-full text-left" onClick={() => { setJSONExample();}}>[ Publish public key to contract ]</button>
+        </div>
+        </div>
+      </div>
+      <div id="footer" className="absolute bottom-0 w-full bg-neutral-100">
+        <div id="footer-content" className="flex flex-row items-center space-x-8 place-content-center py-2">
+          <a href="https://github.com/figurestudios/sidehustles" target="_blank" className="text-black text-center underline text-lg">GitHub</a>
+          <a href="https://skynetlabs.com/" target="_blank" className="text-black text-center underline text-lg">Skynet</a>
+          <a href="https://polygon.technology/" target="_blank" className="text-black text-center underline text-lg">Polygon</a>
+        </div>
+      </div>
     </div>
   )
 }
 
 export default App;
-
-/*export default function App() {
-  return (
-    <div>
-      <script>await getJSONExample();</script>
-    <p className="text-slate-900">test</p>
-    </div>
-  )
-}*/
