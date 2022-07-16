@@ -17,97 +17,6 @@ import { Editor, EditorState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import { render } from '@testing-library/react';
 
-
-/*const CoinbaseWallet = new WalletLinkConnector({
- url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
- appName: "Web3-react Demo",
- supportedChainIds: [1, 3, 4, 5, 42],
-});
-
-const WalletConnect = new WalletConnectConnector({
- rpcUrl: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
- bridge: "https://bridge.walletconnect.org",
- qrcode: true,
-});
-
-const Injected = new InjectedConnector({
- supportedChainIds: [1, 3, 4, 5, 42]
-});*/
-
-/*function App(){
-
-  const { activate, deactivate } = useWeb3React();
-
-  const { active, chainId, account } = useWeb3React();
-
-  const portal =
-  window.location.hostname === 'localhost' ? 'https://siasky.net' : undefined;
-
-  const client = new SkynetClient(portal);
-
-  const { publicKey } = genKeyPairFromSeed("you should not be reading this super private secure seed phrase");
-  const { privateKey } = genKeyPairFromSeed("you should not be reading this super private secure seed phrase");
-
-  const dataKey = "myApp";
-  const json = { example: "Hello." };
-
-  console.log("publicKey", publicKey);
-
-  async function getJSONExample() {
-    let _publicKey = document.getElementById("workerPublicKey").value;
-    try {
-      const { data, dataLink } = await client.db.getJSON(_publicKey, dataKey);
-      document.getElementById("ret-skylink").value = dataLink.toString().substring(6);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function setJSONExample() {
-    try {
-      await client.db.setJSON(privateKey, dataKey, { example: document.getElementById("workerFileKey").value });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function getText() {
-    return document.getElementById("text-field").value;
-  }
-
-  const editor = React.useRef(null);
-
-  //const [editorState, setEditorState] = useState(true);
-
-  function download() {
-    console.log(Editor.innerHTML);
-  }
-
-  /*useEffect(() => {
-    setEditorState((prevState) => prevState == true ? prevState = false : prevState = true);
-  }, []);*/
-
-/*  return (
-    <div>
-      {/*-
-      <Warning />
-      <div id="header" className="bg-neutral-100 relative top-0 w-full text-5xl h-16">
-        <p className="inline-block align-middle text-center w-full">SIDEHUSTLES</p>
-      </div>
-      <div id="body">
-        <Editor
-          ref={editor}
-          placeholder="Write something!"
-        />
-        <button onClick={download}>Test</button>
-      </div>
-      <Footer />
-    </div>
-  )
-}
-
-export default App;*/
-
 const portal =
 window.location.hostname === 'localhost' ? 'https://siasky.net' : undefined;
 
@@ -137,20 +46,18 @@ async function setJSONExample(_json) {
 
 function MyEditor() {
   const [editorState, setEditorState] = React.useState(() =>
-    EditorState.createEmpty()
+    EditorState.createEmpty(),
+    console.log("updated") //runs twice
   );
 
   const editor = React.useRef(null);
+
   function focusEditor() {
     editor.current.focus();
   }
 
   async function savePage() {
     const rawContentState = convertToRaw(editorState.getCurrentContent());
-
-    /*const markup = draftToHtml(
-      rawContentState
-    );*/
 
     console.log(rawContentState)
 
@@ -173,21 +80,20 @@ function MyEditor() {
     alert("done");
   }
 
-
   return (
     <div className="flex flex-col">
       <div
-        style={{ border: "2px solid grey", height: "30em", overflow: 'scroll' ,boxSizing: 'border-box', cursor: "text" }}
+        className="bg-white border-4 border-neutral-400 h-[30em] overflow-y-scroll cursor-text"
         onClick={focusEditor}
       >
         <Editor
           ref={editor}
           editorState={editorState}
           onChange={setEditorState}
-          placeholder="Placeholder text ..."
+          placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         />
       </div>
-      <div>
+      <div className='pt-4'>
         <button className="px-5" onClick={savePage}>[save to Skynet]</button>
         <button className="px-5" onClick={loadPage}>[load from Skynet]</button>
       </div>
@@ -195,38 +101,92 @@ function MyEditor() {
   );
 }
 
-export default function App(){
-
+function TextBox() {
   var page = true
 
   const changePage = () => {
     if (page ? page = false : page = true);
     console.log(page);
   }
-  
-  if (page) {
-    return(
-      <div>
-        <div id="header" className="bg-neutral-200 relative top-0 w-full text-5xl h-16 border-neutral-400 border-b-4">
-          <p className="inline-block align-middle text-center w-full">SIDEHUSTLES</p>
-          <button className='fixed right-3 top-16' onClick={changePage}>X</button>
+
+  return(
+    <div className='bg-neutral-300 h-screen'>
+      <div id="header" className="bg-neutral-500 relative top-0 w-full text-5xl h-16 text-neutral-200 border-neutral-400 border-b-4">
+        <p className="inline-block align-middle text-center w-full">SIDEHUSTLES</p>
+        <button className='fixed right-3 top-16 text-neutral-400' onClick={changePage}>X</button>
+      </div>
+      <div className='flex justify-center pt-4'>
+        <div className='w-5/6 h-4/6'>
+          <MyEditor/>
         </div>
-        <div className='flex justify-center pt-4'>
-          <div className='w-5/6 h-4/6'>
-            <MyEditor/>
+      </div>
+      <Footer/>
+    </div>
+  );
+}
+
+function JobOffering() {
+  return(
+    <div>
+      <div className='flex flex-row h-16 w-full border-b-4 border-neutral-400'>
+        <div className='w-1/3'>
+          <p className='text-2xl h-2/5 overflow-hidden'>Job Title</p>
+          <p className='text-xs h-3/5 overflow-y-scroll scrollbar-thin scrollbar-thumb-neutral-400 scrollbar-track-neutral-300'>Job Description</p>
+        </div>
+        <div className='w-1/3 overflow-y-scroll scrollbar-thin scrollbar-thumb-neutral-400 scrollbar-track-neutral-300'>
+          <p>Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags, Tags, tags, tags</p>
+        </div>
+        <div className='flex flex-row w-1/3'>
+          <div className='w-1/3 overflow-hidden'>
+            <p className='pr-8 text-xl flex items-center justify-center h-full'>$5,00</p>
+          </div>
+          <div className='w-1/3 overflow-hidden'>
+            <p className='pr-8 text-xl flex items-center justify-center h-full'>START</p>
+          </div>
+          <div className='w-1/3 overflow-hidden'>
+            <p className='pr-8 text-xl flex items-center justify-center h-full'>CONTACT</p>
           </div>
         </div>
-        <Footer />
       </div>
-    );
-  } else {
-    return(
-      <div>
-        <div id="header" className="bg-neutral-200 relative top-0 w-full text-5xl h-16 border-neutral-400 border-b-4">
-          <p className="inline-block align-middle text-center w-full">SIDEHUSTLES</p>
-          <button className='fixed right-3 top-16' onClick={changePage}>X</button>
+    </div>
+  )
+}
+
+function MainPage() {
+  return(
+    <div className='bg-slate-200 h-screen'>
+      <div id="header" className="bg-neutral-300 relative top-0 w-full text-5xl h-16 border-neutral-400 border-b-4">
+        <p className="inline-block align-middle text-center w-full">SIDEHUSTLES</p>
+      </div>
+      <div className="w-full h-5/6 px-[8%] pt-8 overflow-hidden">
+        <div className='w-full h-full overflow-y-scroll border-neutral-400 scrollbar-thin scrollbar-thumb-neutral-400 scrollbar-track-neutral-300'>
+          <div className='bg-neutral-300 p-2'>
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+            <JobOffering />
+          </div>
         </div>
       </div>
-    );
-  }
+      <Footer/>
+    </div>
+  );
+}
+
+export default function App(){
+  return(
+    <div>
+      <MainPage />
+    </div>
+  );
 }
